@@ -29,6 +29,7 @@ class SDE(ABC):
         """
         pass
 
+
 class ConditionalVectorFieldSDE(SDE):
     def __init__(self, path, z: torch.Tensor, sigma: float):
         """
@@ -52,7 +53,9 @@ class ConditionalVectorFieldSDE(SDE):
         """
         bs = x.shape[0]
         z = self.z.expand(bs, *self.z.shape[1:])
-        return self.path.conditional_vector_field(x,z,t) + 0.5 * self.sigma**2 * self.path.conditional_score(x,z,t)
+        return self.path.conditional_vector_field(
+            x, z, t
+        ) + 0.5 * self.sigma**2 * self.path.conditional_score(x, z, t)
 
     def diffusion_coefficient(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
         """
@@ -109,7 +112,7 @@ class Simulator(ABC):
         xs = [x.clone()]
         nts = ts.shape[1]
         for t_idx in tqdm(range(nts - 1)):
-            t = ts[:,t_idx]
+            t = ts[:, t_idx]
             h = ts[:, t_idx + 1] - ts[:, t_idx]
             x = self.step(x, t, h)
             xs.append(x.clone())
@@ -121,7 +124,13 @@ class EulerMaruyamaSimulator(Simulator):
         self.sde = sde
 
     def step(self, xt: torch.Tensor, t: torch.Tensor, h: torch.Tensor):
-        return xt + self.sde.drift_coefficient(xt,t) * h + self.sde.diffusion_coefficient(xt,t) * torch.sqrt(h) * torch.randn_like(xt)
+        return (
+            xt
+            + self.sde.drift_coefficient(xt, t) * h
+            + self.sde.diffusion_coefficient(xt, t)
+            * torch.sqrt(h)
+            * torch.randn_like(xt)
+        )
 
 
 class LangevinFlowSDE(SDE):
@@ -144,7 +153,7 @@ class LangevinFlowSDE(SDE):
         Returns:
             - u_t(x|z): shape (batch_size, dim)
         """
-        return self.flow_model(x,t) + 0.5 * self.sigma ** 2 * self.score_model(x, t)
+        return self.flow_model(x, t) + 0.5 * self.sigma**2 * self.score_model(x, t)
 
     def diffusion_coefficient(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
         """

@@ -77,6 +77,7 @@ def plot_comparison_heatmap(p_init: Density, p_data: Density, scale: float = 1.0
     axes[0].set_title("Heatmap of p_init")
     axes[0].set_xticks([])
     axes[0].set_yticks([])
+    axes[0].grid(True)
     imshow_density(
         density=p_init,
         x_bounds=x_bounds,
@@ -91,6 +92,7 @@ def plot_comparison_heatmap(p_init: Density, p_data: Density, scale: float = 1.0
     axes[1].set_title("Heatmap of p_data")
     axes[1].set_xticks([])
     axes[1].set_yticks([])
+    axes[1].grid(True)
     imshow_density(
         density=p_data,
         x_bounds=x_bounds,
@@ -105,6 +107,7 @@ def plot_comparison_heatmap(p_init: Density, p_data: Density, scale: float = 1.0
     axes[2].set_title("Heatmap of p_init and p_data")
     axes[2].set_xticks([])
     axes[2].set_yticks([])
+    axes[2].grid(True)
     imshow_density(
         density=p_init,
         x_bounds=x_bounds,
@@ -123,6 +126,9 @@ def plot_comparison_heatmap(p_init: Density, p_data: Density, scale: float = 1.0
         alpha=0.25,
         cmap=plt.get_cmap("Blues"),
     )
+
+    plt.grid(True)
+    plt.show()
 
 
 def plot_conditional_path(
@@ -183,6 +189,7 @@ def plot_conditional_path(
         )
 
     plt.legend(prop={"size": 18}, markerscale=3)
+    plt.grid(True)
     plt.show()
 
 
@@ -191,13 +198,16 @@ def plot_generated_sample(
     ts: torch.Tensor,
     p_init: Density,
     p_data: Density,
+    num_samples: int = 1000,
     num_timesteps=300,
+    num_marginals=3.0,
     scale=1.0,
     legend_size=24,
     markerscale=1.8,
-    num_marginals=3.0,
 ):
-    fig, ax = plt.subplots(1, 1, figsize=(24, 8))
+    fig, axes = plt.subplots(1, 2, figsize=(16, 8))
+
+    ax = axes[0]
 
     x_bounds = [-scale, scale]
     y_bounds = [-scale, scale]
@@ -206,7 +216,7 @@ def plot_generated_sample(
     ax.set_ylim(*y_bounds)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_title("Samples from Learned Marginal ODE", fontsize=20)
+    ax.set_title("Samples from Learned Marginal SDE", fontsize=20)
 
     # Plot source and target
     imshow_density(
@@ -229,15 +239,6 @@ def plot_generated_sample(
         alpha=0.25,
         cmap=plt.get_cmap("Blues"),
     )
-    contour_density(
-        density=p_data,
-        x_bounds=x_bounds,
-        y_bounds=y_bounds,
-        bins=200,
-        ax=ax,
-        vmin=-10,
-        alpha=0.25,
-    )
 
     # Extract every n-th integration step to plot
     every_n = record_every(
@@ -257,4 +258,42 @@ def plot_generated_sample(
 
     ax.legend(prop={"size": legend_size}, loc="upper right", markerscale=markerscale)
 
+    ax = axes[1]
+    ax.set_title("Trajectories of Learned Marginal SDE", fontsize=20)
+    ax.set_xlim(*x_bounds)
+    ax.set_ylim(*y_bounds)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    # Plot source and target
+    imshow_density(
+        density=p_init,
+        x_bounds=x_bounds,
+        y_bounds=y_bounds,
+        bins=200,
+        ax=ax,
+        vmin=-10,
+        alpha=0.25,
+        cmap=plt.get_cmap("Reds"),
+    )
+    imshow_density(
+        density=p_data,
+        x_bounds=x_bounds,
+        y_bounds=y_bounds,
+        bins=200,
+        ax=ax,
+        vmin=-10,
+        alpha=0.25,
+        cmap=plt.get_cmap("Blues"),
+    )
+
+    for traj_idx in range(num_samples // 10):
+        ax.plot(
+            xts[traj_idx, :, 0].detach().cpu(),
+            xts[traj_idx, :, 1].detach().cpu(),
+            alpha=0.5,
+            color="black",
+        )
+
+    plt.grid(True)
     plt.show()
