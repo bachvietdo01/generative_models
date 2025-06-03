@@ -7,7 +7,7 @@ Welcome to this repository, which provides a gentle introduction to **Diffuson M
 
 ```
 https://github.com/bachvietdo01/generative_models.git
-cd flow_matching
+cd diffusion_model
 uv sync
 ```
 
