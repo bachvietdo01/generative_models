@@ -2,7 +2,7 @@
 
 Welcome to this repository, which provides a gentle introduction to **Diffuson Models** — a class of generative models that offer an powerful way to learn mappings between probability distributions.
 
-![fm_sample](https://github.com/bachvietdo01/generative_models/blob/main/flow_matching/asset/generated_samples.png?raw=true)
+![fm_sample](https://github.com/bachvietdo01/generative_models/blob/main/diffusion_model/asset/generated_samples.png?raw=true)
 
 ## Installation Guide
 
