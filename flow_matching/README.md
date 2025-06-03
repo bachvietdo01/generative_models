@@ -14,6 +14,6 @@ uv sync
 
 ## Running the code
 
-The Jupyter notebook main.ipynb walks through all the steps for training a Flow Matching model and generating samples from an 11-component Gaussian Mixture Model.
+The Jupyter notebook main.ipynb walks through all the steps for training a Flow Matching model and generating samples from an 11-component Gaussian Mixture Model from an initial Standard Gaussian distribution.
 
 ![fm_sample](https://github.com/bachvietdo01/generative_models/blob/main/flow_matching/asset/generated_samples.png?raw=true)
