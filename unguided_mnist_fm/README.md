@@ -2,6 +2,8 @@
 
 Welcome to this repository, which offers a practical introduction to using Flow Matching as a generative model for unguided MNIST image generation.
 
+![unguided_fm_mnist](https://github.com/bachvietdo01/generative_models/blob/main/unguided_mnist_fm/asset/unguide_fminst_sample.png?raw=true)
+
 ## Installation Guide
 
 
